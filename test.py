@@ -32,4 +32,4 @@ async def get_stored_data():
 
 
 if __name__ == "__main__":
-    uvicorn.run(app,host=35.164.95.156, port=9876)
+    uvicorn.run(app,host="127.0.0.1", port=8080)
