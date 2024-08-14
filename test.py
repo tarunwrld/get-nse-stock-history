@@ -8,7 +8,10 @@ app = FastAPI()
 
 data_store = {}
 
-
+@app.get("/")
+async def root():
+    return {"message": "Hello World"}
+    
 @app.get("/fastapi/get-hist/pass==cheeku/{ticker}")
 async def get_history(ticker: str):
     try:
@@ -32,4 +35,4 @@ async def get_stored_data():
 
 
 if __name__ == "__main__":
-    uvicorn.run(app,host="127.0.0.1", port=8080)
+    uvicorn.run(app,host="0.0.0.0", port=8080)
