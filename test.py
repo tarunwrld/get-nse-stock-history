@@ -1,50 +1,19 @@
-# from histdata import TvDatafeed, Interval
-# import pandas as pd
-# from fastapi import FastAPI, HTTPException
-# from fastapi.responses import JSONResponse
-# import uvicorn
-
-# app = FastAPI()
-
-# data_store = {}
-
-# @app.get("/")
-# async def root():
-#     return {"message": "Hello World"}
-    
-# @app.get("/fastapi/get-hist/pass==cheeku/{ticker}")
-# async def get_history(ticker: str):
-#     try:
-#         tv = TvDatafeed()
-#         data_store[ticker] = ticker
-#         nifty_index_data = tv.get_hist(symbol=ticker, exchange='NSE', interval=Interval.in_1_minute, n_bars=10000)
-
-#         df = pd.DataFrame(nifty_index_data)
-
-#         json_data = df.to_json(orient='records')
-#         # Convert JSON string to a Python list
-#         json_data = pd.read_json(json_data).to_dict(orient='records')
-
-#         return JSONResponse(content=json_data)
-#     except Exception as e:
-#         raise HTTPException(status_code=500, detail=str(e))
-    
-# @app.get("/fastapi/get-stored-data/pass==cheeku")
-# async def get_stored_data():
-#     return JSONResponse(content={"stored_tickers": list(data_store.values())})
-
-
-# if __name__ == "__main__":
-#     uvicorn.run(app,host="0.0.0.0", port=8080)
 from histdata import TvDatafeed, Interval
 import pandas as pd
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import JSONResponse
 import uvicorn
+import requests
+from datetime import datetime, timedelta
+from io import BytesIO
+from nse import NSE
+
 
 app = FastAPI()
 
 data_store = {}
+
+nse = NSE()
 
 @app.get("/")
 async def root():
@@ -80,6 +49,18 @@ async def get_history(ticker: str, interval: int, n_bars: int):
         json_data = pd.read_json(json_data).to_dict(orient='records')
 
         return JSONResponse(content=json_data)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
+@app.get("/fastapi/get-nse-hist/{ticker}/{n_bars}")
+async def get_history(ticker: str, n_bars: int):
+    try:
+        data_store[ticker] = ticker
+        # Fetch historical data for the given ticker and interval
+        data = nse.getHistoricalData(ticker, "EQ", n_bars)
+        if data is None:
+            raise HTTPException(status_code=404, detail="Data not found for the given ticker")
+        return JSONResponse(content=data)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     
