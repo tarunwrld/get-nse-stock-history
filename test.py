@@ -3,15 +3,13 @@ import pandas as pd
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import JSONResponse
 import uvicorn
-import requests
-from datetime import datetime, timedelta
-from io import BytesIO
 from nse import NSE
 
 
 app = FastAPI()
 
 data_store = {}
+
 
 nse = NSE()
 
