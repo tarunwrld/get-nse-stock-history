@@ -9,9 +9,6 @@ app = FastAPI()
 
 data_store = {}
 
-
-nse = NSE()
-
 @app.get("/")
 async def root():
     return {"message": "Hello World"}
