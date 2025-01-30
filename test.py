@@ -74,7 +74,9 @@ import pandas as pd
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import JSONResponse
 import uvicorn
-from nse import NSE
+import requests
+from datetime import datetime, timedelta
+from io import BytesIO
 
 
 app = FastAPI()
